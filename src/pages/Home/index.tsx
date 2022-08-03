@@ -11,22 +11,45 @@ import {
   TaskInput,
   MinutesAmoutInput,
 } from './styles'
+import { useState } from 'react'
 
 const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa'),
-  minutesAmout: zod
-    .number()
-    .min(5)
-    .max(60, 'O intervalo precisa ser no máximo de 60 min'),
+  minutesAmout: zod.number().min(5).max(60),
 })
 
+// interface NewCycleFormData {
+//   task: string
+//   minutesAmout: number
+// }
+
+type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
+
+interface Cycle {
+  id: string
+  task: string
+  minutesAmout: number
+}
+
 export function Home() {
-  const { register, handleSubmit, watch } = useForm({
+  const [cycles, setCycles] = useState<Cycle[]>([])
+  const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
+    defaultValues: {
+      task: '',
+      minutesAmout: 0,
+    },
   })
 
-  function handleCreateNewCycle(data: any) {
-    console.log(data)
+  function handleCreateNewCycle(data: NewCycleFormData) {
+    const newCycle: Cycle = {
+      id: String(new Date().getTime()),
+      task: data.task,
+      minutesAmout: data.minutesAmout,
+    }
+
+    setCycles((state) => [...state, newCycle])
+    reset()
   }
 
   const task = watch('task')
