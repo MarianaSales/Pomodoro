@@ -3,12 +3,15 @@ import { ThemeProvider } from 'styled-components'
 import { Router } from './styles/Router'
 import { GlobalStyle } from './styles/global'
 import { defaultTheme } from './styles/theme/default'
+import { CyclesContextProvider } from './context/CyclesContext'
 
 export function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <BrowserRouter>
-        <Router />
+        <CyclesContextProvider>
+          <Router />
+        </CyclesContextProvider>
       </BrowserRouter>
       <GlobalStyle />
     </ThemeProvider>
